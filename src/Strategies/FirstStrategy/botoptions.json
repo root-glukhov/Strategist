@@ -1,0 +1,7 @@
+{
+  "Exchange": "Binance",
+  "Ticker": "ATOMUSDT",
+  "Interval": "FifteenMinutes",
+  "Days": 3,
+  "Gap":  5
+}
