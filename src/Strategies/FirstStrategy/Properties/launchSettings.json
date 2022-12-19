@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FirstStrategy": {
+      "commandName": "Project",
+      "commandLineArgs": "FirstStrategy testing --ticker=BTCUSDT -d 10 -g 50"
+    }
+  }
+}

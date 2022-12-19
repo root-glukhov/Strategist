@@ -10,7 +10,8 @@ public class Strategy : StrategyBase
 {
     int counter = 0;
 
-    public override List<Indicator> GetIndicators(List<Indicator> indicators) {
+    public override List<Indicator> GetIndicators(List<Indicator> indicators)
+    {
         indicators.Add(new Indicator()
         {
             Name = "SMA",
