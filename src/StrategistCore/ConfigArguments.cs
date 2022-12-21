@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StrategistCore.Enums;
 using System.CommandLine;
+using System.Diagnostics;
 
 namespace StrategistCore;
 
@@ -28,7 +29,6 @@ internal class ConfigArguments
         var daysOption = new Option<int>(new[] { "--days", "-d" }, "Number of days to download history, if any");
         var gapOption = new Option<int>(new[] { "--gap", "-g" }, "How many days to deviate from today before starting the history request");
 
-
         RootCommand cmd = new() {
             testingArgument,
             tickerOption,
@@ -36,11 +36,12 @@ internal class ConfigArguments
             gapOption,
         };
 
-        cmd.SetHandler((ticker, days, gap) => {
+        cmd.SetHandler((ticker, days, gap) =>
+        {
             Ticker = ticker;
             Days = days;
             Gap = gap;
-        }, 
+        },
         tickerOption, daysOption, gapOption);
 
         cmd.Invoke(args);
@@ -49,7 +50,7 @@ internal class ConfigArguments
     void GetJsonFilesArgs()
     {
         IConfigurationRoot? config = new ConfigurationBuilder()
-            .AddJsonFile($"botoptions.json")
+            .AddJsonFile($"Configuration/botoptions.json")
             .Build();
 
         string exchaneName = config.GetSection("Exchange").Value!;

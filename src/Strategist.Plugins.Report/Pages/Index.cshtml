@@ -1,0 +1,64 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<div id="app">
+    <trading-vue :data="data" :width="this.width" :height="this.height"
+                 :toolbar="true"
+                 :chart-config="{TB_ICON_BRI: 1.25}"
+                 :color-back="colors.colorBack"
+                 :color-grid="colors.colorGrid"
+                 :color-text="colors.colorText">
+    </trading-vue>
+    <span class="night-mode">
+        <input type="checkbox" v-model="night">
+        <label>NM</label>
+    </span>
+</div>
+
+@section Scripts  {
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const res = await fetch('./data.json', { mode: 'no-cors' });
+            const json = await res.json();
+            const dc = new TradingVueJs.DataCube({ ...json });
+            const app = createChart(dc);
+        });
+
+        function createChart(datacube) {
+            app = new Vue({
+                el: '#app',
+                data: {
+                    data: datacube,
+                    width: window.innerWidth,
+                    height: window.innerHeight,
+                    night: true
+                },
+                mounted() {
+                    window.addEventListener('resize', this.onResize)
+                    window.DataCube = this.data
+                },
+                methods: {
+                    onResize(event) {
+                        this.width = window.innerWidth
+                        this.height = window.innerHeight
+                    }
+                },
+                computed: {
+                    colors() {
+                        return this.night ? {} : {
+                            colorBack: '#fff',
+                            colorGrid: '#eee',
+                            colorText: '#333'
+                        }
+                    },
+                },
+                beforeDestroy() {
+                    window.removeEventListener('resize', this.onResize)
+                },
+            })
+        }
+    </script>
+}

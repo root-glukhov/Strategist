@@ -12,19 +12,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Strategist.Plugins.Report\Strategist.Plugins.Report.csproj" />
     <ProjectReference Include="..\..\StrategistCore\StrategistCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="example.appsettings.json">
+    <None Update="Configuration\example.appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="appsettings.json">
+    <None Update="Configuration\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="botoptions.json">
+    <None Update="Configuration\botoptions.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <ProjectExtensions><VisualStudio><UserProperties properties_4launchsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

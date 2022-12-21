@@ -18,7 +18,7 @@ internal class Binance : IExchange
 	public Binance()
 	{
         _config = new ConfigurationBuilder()
-            .AddJsonFile($"appsettings.json")
+            .AddJsonFile($"Configuration/appsettings.json")
             .Build();
 
         _client = new BinanceClient(new BinanceClientOptions
