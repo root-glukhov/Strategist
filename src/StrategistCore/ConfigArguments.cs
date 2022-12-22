@@ -1,7 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using StrategistCore.Enums;
+using StrategistCore.Models;
 using System.CommandLine;
 using System.Diagnostics;
+using System.IO;
 
 namespace StrategistCore;
 
@@ -23,20 +25,29 @@ internal class ConfigArguments
     {
         string[] args = Environment.GetCommandLineArgs().Skip(1).ToArray();
 
-        var testingArgument = new Argument<string?>("testing", () => { return null; }, "Strategy testing module");
+        // Report
+        var reportCmd = new Command("report", "Read and display the file.");
+        reportCmd.SetHandler(() => {
+            try {
+                Process.Start("Strategist.Plugins.Report.exe");
+            } catch {
+                Console.WriteLine("Для вызова команды 'report' установите пакет Strategist.Plugins.Report");
+            }
+        });
 
+        // Testing
         var tickerOption = new Option<string>(new[] { "--ticker", "-t" }, "Tool for work");
         var daysOption = new Option<int>(new[] { "--days", "-d" }, "Number of days to download history, if any");
         var gapOption = new Option<int>(new[] { "--gap", "-g" }, "How many days to deviate from today before starting the history request");
 
-        RootCommand cmd = new() {
-            testingArgument,
+        var testingCmd = new Command("testing", "Strategy testing module")
+        {
             tickerOption,
             daysOption,
-            gapOption,
+            gapOption
         };
 
-        cmd.SetHandler((ticker, days, gap) =>
+        testingCmd.SetHandler((ticker, days, gap) =>
         {
             Ticker = ticker;
             Days = days;
@@ -44,7 +55,11 @@ internal class ConfigArguments
         },
         tickerOption, daysOption, gapOption);
 
-        cmd.Invoke(args);
+        // Root
+        var rootCommand = new RootCommand("Sample app for System.CommandLine");
+        rootCommand.AddCommand(reportCmd);
+        rootCommand.AddCommand(testingCmd);
+        rootCommand.Invoke(args);
     }
 
     void GetJsonFilesArgs()

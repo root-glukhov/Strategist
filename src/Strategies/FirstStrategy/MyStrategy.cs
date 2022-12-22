@@ -3,7 +3,8 @@ using StrategistCore;
 
 public class MyStrategy : StrategyBase
 {
-    int counter = 0;
+    decimal fast = 0;
+    decimal slow = 0;
 
     public override List<Indicator> GetIndicators(List<Indicator> indicators)
     {
@@ -15,11 +16,11 @@ public class MyStrategy : StrategyBase
                 new Figure()
                 {
                     Name = "fast",
-                    Value = 12
+                    Value = fast
                 },
                 new Figure() {
                     Name = "slow",
-                    Value = counter
+                    Value = slow
                 }
             },
             InChart = true
@@ -30,7 +31,7 @@ public class MyStrategy : StrategyBase
 
     public override void OnCandle(Ohlcv c)
     {
-        Console.WriteLine("{0} {1}", counter, c.ToString());
-        counter++;
+        fast = c.High + 5;
+        slow = c.Low - 5;
     }
 }
