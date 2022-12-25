@@ -5,6 +5,8 @@ namespace StrategistCore.Models;
 
 internal class Datacube
 {
+    [JsonProperty("title")]
+    public string Title { get; init; }
     [JsonProperty("chart")]
     public Chart Chart { get; init; } = new();
     [JsonProperty("onchart")]
@@ -34,7 +36,7 @@ internal class Chart
     [JsonProperty("type")]
     public string Type { get; set; }
     [JsonProperty("data")]
-    public List<decimal[]> Data { get; set; }
+    public List<object[]> Data { get; set; }
     [JsonProperty("settings")]
     public IDictionary<string, string> Settings { get; set; }
 

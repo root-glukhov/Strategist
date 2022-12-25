@@ -1,5 +1,6 @@
 ﻿using CryptoExchange.Net.CommonObjects;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using StrategistCore.Enums;
 using StrategistCore.Models;
 using System.CommandLine;
@@ -13,10 +14,11 @@ public abstract class StrategyBase
 
     //ConfigArguments config;
 
+    public virtual void GetIndicators() { }
     public abstract void OnCandle(Ohlcv c);
 
-    List<Indicator> indicators = new List<Indicator>();
-    public abstract List<Indicator> GetIndicators(List<Indicator> indicators);
+    public List<Indicator> Indicators = new();
+    
 
     public StrategyBase()
     {
@@ -61,26 +63,61 @@ public abstract class StrategyBase
         };
 
         testingCmd.SetHandler((ticker, days, gap) => {
-            // Init Datacube
-            Datacube dc = new Datacube();
-            dc.Chart.Name = ticker;
-            dc.Chart.Type = "Candles";
-
-            dc.OnChart[0].Name = "SMA";
-
             IExchange exchange;
             Interval interval;
             GetJsonFilesArgs(out exchange, out interval);
 
+            // Init Datacube
+            Datacube dc = new Datacube();
+            dc.Chart.Name = $"{ticker}";
+            dc.Chart.Type = "Candles";
+
             List<Ohlcv> ohlcvData = exchange.GetOhlcvData(ticker, interval, days, gap).Result;
+
+            GetIndicators();
+
             foreach (var c in ohlcvData)
             {
                 OnCandle(c);
 
-                dc.Chart.Data.Add(new decimal[] { c.Timestamp, c.Open, c.High, c.Low, c.Close, c.Volume });
-                var indic = GetIndicators(indicators);
-                
+                dc.Chart.Data.Add(new object[] { c.Timestamp, c.Open, c.High, c.Low, c.Close, c.Volume });
 
+                foreach (var indicator in Indicators)
+                {
+                    foreach (var figure in indicator.Figures)
+                    {
+                        figure.AddValue(figure.GetValue());
+                    }
+                }
+            }
+
+            // Console.WriteLine(JsonConvert.SerializeObject(Indicators));
+
+            // Indicators to Datacube
+            foreach (var idctr in Indicators)
+            {
+                if(idctr.InChart)
+                {
+                    var chart = new Chart();
+                    chart.Name = idctr.Name;
+                    chart.Type = "Indicators";
+
+                    List<object[]> data = new();
+
+                    foreach (var dcD in dc.Chart.Data)
+                    {
+                        var obj = new object[idctr.Figures.Length + 1];
+                        obj[0] = dcD[0];
+                        for(int i = 1; i < idctr.Figures.Length; i++)
+                        {
+                            obj[i] = idctr.Figures[i - 1];
+                        }
+                        data.Add(obj);
+                    }
+
+                    chart.Data = data;
+                    dc.OnChart.Add(chart);
+                }
             }
 
             dc.Save().Wait();

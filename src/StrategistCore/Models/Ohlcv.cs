@@ -9,7 +9,7 @@ namespace StrategistCore.Models;
 
 public class Ohlcv
 {
-    public decimal Timestamp { get; set; }
+    public long Timestamp { get; set; }
     public decimal Open { get; set; }
     public decimal High { get; set; }
     public decimal Low { get; set; }
@@ -36,9 +36,9 @@ public class Ohlcv
         return ohlcvList;
     }
 
-    public static decimal DateTimeToTimestamp(DateTime dateTime)
+    public static long DateTimeToTimestamp(DateTime dateTime)
     {
-        decimal timestamp = (decimal)(TimeZoneInfo.ConvertTimeToUtc(dateTime) 
+        long timestamp = (long)(TimeZoneInfo.ConvertTimeToUtc(dateTime) 
             - new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Utc)).TotalSeconds;
         return timestamp * 1000;
     }

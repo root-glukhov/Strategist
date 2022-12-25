@@ -6,9 +6,9 @@ public class MyStrategy : StrategyBase
     decimal fast = 0;
     decimal slow = 0;
 
-    public override List<Indicator> GetIndicators(List<Indicator> indicators)
-    {
-        indicators.Add(new Indicator()
+    public override void GetIndicators()
+    {   
+        Indicators.Add(new Indicator()
         {
             Name = "SMA",
             Figures = new[]
@@ -16,17 +16,15 @@ public class MyStrategy : StrategyBase
                 new Figure()
                 {
                     Name = "fast",
-                    Value = fast
+                    GetValue = () => fast
                 },
                 new Figure() {
                     Name = "slow",
-                    Value = slow
+                    GetValue = () => slow
                 }
             },
             InChart = true
         });
-
-        return indicators;
     }
 
     public override void OnCandle(Ohlcv c)
