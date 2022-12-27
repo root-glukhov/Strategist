@@ -12,12 +12,14 @@ public abstract class StrategyBase
 
     public virtual void GetIndicators() { }
     public abstract void OnCandle(Ohlcv c);
+    public Ohlcv lastCandle { get; set; }
+
+    public OrdersService Orders { get; set; }
 
     public StrategyBase()
     {
         string[] args = Environment.GetCommandLineArgs().Skip(1).ToArray();
 
-        // Root
         var rootCommand = new RootCommand("Strategist application");
         rootCommand.AddCommand(TestingCommand());
         rootCommand.AddCommand(ReportCommand());

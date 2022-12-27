@@ -3,17 +3,16 @@ using Strategist.Core;
 
 public class MyStrategy : StrategyBase
 {
-    int counter = 0;
-
     decimal? fast;
-    decimal? slow;
+    bool isOrder = false;
+
+    int counter = 0;
+    decimal openFast = 0;
+    decimal openPrice = 0;
+
+    Order order;
 
     SMA sma = new SMA(20);
-
-    public MyStrategy()
-    {
-
-    }
 
     public override void GetIndicators()
     {
@@ -36,7 +35,25 @@ public class MyStrategy : StrategyBase
     {
         fast = sma.Update(c.Close);
 
-        Console.WriteLine(c.ToString());
+        if (!isOrder && fast > c.Open)
+        {
+            isOrder = true;
+            openFast = (decimal)fast;
+            openPrice = c.Open;
+
+            order = Orders.CreateOrder(OpenType.Buy);
+        } 
+        if (isOrder && c.Close > fast)
+        {
+            isOrder = false;
+            Console.WriteLine($"{openFast} > {openPrice} : {c.Close} > {fast} = {counter}");
+            counter = 0;
+
+            Orders.CloseOrder(order);
+        }
+
+        if (isOrder)
+            counter++;
     }
 }
 

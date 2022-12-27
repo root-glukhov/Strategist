@@ -44,7 +44,7 @@ export default {
             dealsMap.forEach((deal) => {
                 const type = deal[2];
                 const orderType = deal[4];
-                const isBuy = orderType === 'BUY';
+                const isBuy = orderType === 'Buy';
 
                 ctx.fillStyle = isBuy ? this.buy_color : this.sell_color;
 

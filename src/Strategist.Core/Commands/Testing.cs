@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CryptoExchange.Net.CommonObjects;
+using Newtonsoft.Json;
 using Strategist.Core.Interfaces;
 using Strategist.Core.Models;
 
@@ -6,73 +7,73 @@ namespace Strategist.Core.Commands;
 
 internal class Testing
 {
-    private Datacube dc = new();
+    private readonly StrategyBase _sb;
 
 	public Testing(StrategyBase strategyBase, IExchange exchange, string ticker, Interval interval, int days, int gap)
 	{
-        dc.Title = $"{ticker} - {exchange}";
+        _sb = strategyBase;
+        _sb.GetIndicators();
+        _sb.Orders = new OrdersService(_sb);
+
+
+        Datacube dc = CreateDatacube(ticker, exchange);
+        List<Ohlcv> ohlcvData = exchange.GetOhlcvData(ticker, interval, days, gap).Result;
+
+        ohlcvData.ForEach(ohlcv => {
+            dc.Chart.Data.Add(new() { ohlcv.Timestamp, ohlcv.Open, ohlcv.High, ohlcv.Low, ohlcv.Close, ohlcv.Volume });
+            _sb.lastCandle = ohlcv;
+            _sb.OnCandle(ohlcv);
+ 
+            _sb.Indicators.ForEach(indicator => {
+                int index = _sb.Indicators.IndexOf(indicator);
+                var item = new List<object> { ohlcv.Timestamp };
+
+                indicator.Figures.ToList().ForEach(figure => {
+                    var value = figure.AddValue(figure.GetValue());
+                    item.Add(value);
+                });
+
+                if (indicator.InChart)
+                    dc.OnChart[index].Data.Add(item);
+                else
+                    dc.OffChart[index].Data.Add(item);
+            });
+        });
+
+        // Туть добавить в dc все созданные ордера
+        _sb.Orders.AddToDatacube(ref dc);
+
+        dc.Save().Wait();
+    }
+
+    private Datacube CreateDatacube(string ticker, IExchange exchange)
+    {
+        Datacube dc = new();
+        dc.Title = $"{ticker} - {exchange.GetType().Name}";
         dc.Chart.IndexBased = true;
         dc.Settings = new Settings { RangeFrom = 0, RangeTo = 100 };
 
-        strategyBase.GetIndicators();
-
-        List<Ohlcv> ohlcvData = exchange.GetOhlcvData(ticker, interval, days, gap).Result;
-
-        foreach (var indicator in strategyBase.Indicators)
-        {
-            var chart = new Chart()
-            {
-                Name = indicator.Name,
-                Type = "Indicators",
-            };
-
+        _sb.Indicators.ForEach(indicator => {
+            Chart chart = new();
+            chart.Name = indicator.Name;
+            chart.Type = "Indicators";
             chart.Settings.Schema = new();
             chart.Settings.Colors = new();
 
             chart.Settings.Schema.Add("time");
 
-            foreach (var figure in indicator.Figures)
-            {
+            indicator.Figures.ToList().ForEach(figure => {
                 string schemaValue = $"{figure.Name}.{figure.Type}.value".ToLower();
                 chart.Settings.Schema.Add(schemaValue);
                 chart.Settings.Colors.Add(null);
-            }
+            });
 
             if (indicator.InChart)
-            {
                 dc.OnChart.Add(chart);
-            }
             else
-            {
                 dc.OffChart.Add(chart);
-            }
-        }
+        });
 
-        foreach (var c in ohlcvData)
-        {
-            dc.Chart.Data.Add(new() { c.Timestamp, c.Open, c.High, c.Low, c.Close, c.Volume });
-
-            strategyBase.OnCandle(c);
-
-            strategyBase.Indicators.ForEach(x => {
-                var index = strategyBase.Indicators.IndexOf(x);
-                var obj = new List<object> { c.Timestamp };
-
-                x.Figures.ToList().ForEach(f =>
-                {
-                    var value = f.AddValue(f.GetValue());
-                    obj.Add(value);
-                });
-
-                if (x.InChart)
-                    dc.OnChart[index].Data.Add(obj);
-                else
-                    dc.OffChart[index].Data.Add(obj);
-            });
-        }
-
-        dc.Save().Wait();
-
-        Console.WriteLine(JsonConvert.SerializeObject(dc));
+        return dc;
     }
 }

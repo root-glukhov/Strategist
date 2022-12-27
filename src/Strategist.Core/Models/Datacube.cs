@@ -53,6 +53,8 @@ internal class Chart
 
 internal class Settings
 {
+    [JsonProperty("z-index", NullValueHandling = NullValueHandling.Ignore)]
+    public int? zIndex;
     [JsonProperty("schema", NullValueHandling = NullValueHandling.Ignore)]
     public List<string> Schema;
     [JsonProperty("colors", NullValueHandling = NullValueHandling.Ignore)]
