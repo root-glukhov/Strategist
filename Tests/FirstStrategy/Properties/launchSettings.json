@@ -1,0 +1,16 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "Testing": {
+      "commandName": "Project",
+      "commandLineArgs": "FirstStrategy testing --ticker BTCUSDT -d 1"
+    },
+    "Report": {
+      "commandName": "Project",
+      "commandLineArgs": "report"
+    }
+  }
+}

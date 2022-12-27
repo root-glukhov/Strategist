@@ -361,4 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-/src/Strategies/FirstStrategy/appsettings.json
+/Tests/FirstStrategy/Configuration/appsettings.json
