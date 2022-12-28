@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Strategist.Core.Commands;
 using Strategist.Core.Interfaces;
 using Strategist.Core.Models;
@@ -8,13 +9,15 @@ namespace Strategist.Core;
 
 public abstract class StrategyBase
 {
+    internal Dictionary<string, object> botOptions;
+
     public List<Indicator> Indicators = new();
 
     public virtual void GetIndicators() { }
     public abstract void OnCandle(Ohlcv c);
     public Ohlcv lastCandle { get; set; }
 
-    public OrdersService Orders { get; set; }
+    internal OrderService OrderService { get; set; }
 
     public StrategyBase()
     {
@@ -25,6 +28,8 @@ public abstract class StrategyBase
         rootCommand.AddCommand(ReportCommand());
         rootCommand.Invoke(args);
     }
+
+    #region CLI Commands 
 
     Command TestingCommand()
     {
@@ -40,9 +45,19 @@ public abstract class StrategyBase
         };
 
         testingCmd.SetHandler((ticker, days, gap) => {
-            IExchange exchange;
-            Interval interval;
-            GetJsonFilesArgs(out exchange, out interval);
+            //IConfigurationRoot? config = new ConfigurationBuilder()
+            //.AddJsonFile($"Configuration/botoptions.json")
+            //.Build();
+
+            using StreamReader r = new StreamReader("Configuration/botoptions.json");
+            string json = r.ReadToEnd();
+            r.Dispose();
+
+            //string a = config.ToString();
+            botOptions = JsonConvert.DeserializeObject<Dictionary<string, object>>(json);
+
+            IBroker exchange = GetBroker(botOptions["Broker"].ToString());
+            Interval interval = GetInterval(botOptions["Interval"].ToString());
 
             new Testing(this, exchange, ticker, interval, days, gap);
         },
@@ -54,30 +69,50 @@ public abstract class StrategyBase
     Command ReportCommand()
     {
         var reportCmd = new Command("report", "Read and display the file.");
-        reportCmd.SetHandler(() => new Report());
+        reportCmd.SetHandler(() => new Commands.Report());
 
         return reportCmd;
     }
 
-    void GetJsonFilesArgs(out IExchange exchange, out Interval interval)
-    {
-        IConfigurationRoot? config = new ConfigurationBuilder()
-            .AddJsonFile($"Configuration/botoptions.json")
-            .Build();
+    #endregion
 
-        string exchaneName = config.GetSection("Exchange").Value!;
-        exchange = CreateExchange(exchaneName);
-        Enum.TryParse(config.GetSection("Interval").Value!, true, out interval);
-    }
+    #region Orders 
 
-    private IExchange CreateExchange(string exchangeName)
+    public Order CreateOrder(OpenType openType) => OrderService.CreateOrder(openType);
+    public void CloseOrder(Order order) => OrderService.CloseOrder(order);
+
+    #endregion
+
+    private IBroker GetBroker(string broker)
     {
-        switch (exchangeName.ToLower())
+        switch (broker.ToLower())
         {
             case "binance":
                 return new Exchanges.Binance();
             default:
-                throw new ArgumentNullException();
+                throw new NotSupportedException();
+        }
+    }
+
+    private Interval GetInterval(string interval)
+    {
+        switch (interval.ToLower()) {
+            case "1m":
+                return Interval.OneMinute;
+            case "3m":
+                return Interval.ThreeMinutes;
+            case "5m":
+                return Interval.FiveMinutes;
+            case "15m":
+                return Interval.FifteenMinutes;
+            case "30m":
+                return Interval.ThirtyMinutes;
+            case "1h":
+                return Interval.OneHour;
+            case "4h":
+                return Interval.FourHour;
+            default:
+                throw new NotSupportedException();
         }
     }
 }

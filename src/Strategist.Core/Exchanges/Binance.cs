@@ -9,7 +9,7 @@ using Strategist.Core.Models;
 
 namespace Strategist.Core.Exchanges;
 
-internal class Binance : IExchange
+internal class Binance : IBroker
 {
     private IConfigurationRoot _config { get; set; }
     private BinanceClient _client { get; set; }

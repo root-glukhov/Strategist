@@ -8,16 +8,18 @@ namespace Strategist.Core.Commands;
 internal class Testing
 {
     private readonly StrategyBase _sb;
+    private List<Ohlcv> ohlcvData;
 
-	public Testing(StrategyBase strategyBase, IExchange exchange, string ticker, Interval interval, int days, int gap)
+
+    public Testing(StrategyBase strategyBase, IBroker exchange, string ticker, Interval interval, int days, int gap)
 	{
         _sb = strategyBase;
         _sb.GetIndicators();
-        _sb.Orders = new OrdersService(_sb);
+        _sb.OrderService = new OrderService(_sb);
 
 
         Datacube dc = CreateDatacube(ticker, exchange);
-        List<Ohlcv> ohlcvData = exchange.GetOhlcvData(ticker, interval, days, gap).Result;
+        ohlcvData = exchange.GetOhlcvData(ticker, interval, days, gap).Result;
 
         ohlcvData.ForEach(ohlcv => {
             dc.Chart.Data.Add(new() { ohlcv.Timestamp, ohlcv.Open, ohlcv.High, ohlcv.Low, ohlcv.Close, ohlcv.Volume });
@@ -40,18 +42,26 @@ internal class Testing
             });
         });
 
-        // Туть добавить в dc все созданные ордера
-        _sb.Orders.AddToDatacube(ref dc);
+        Chart ordersChart = _sb.OrderService.GetChart();
+        dc.OnChart.Add(ordersChart);
 
+        var bService = new BalanceService(_sb);
+        var stats = bService.GetStats(_sb.OrderService.Orders);
+        Chart balanceChart = bService.GetChart();
+        dc.OffChart.Add(balanceChart);
+
+        dc.Settings = new Settings { RangeFrom = ohlcvData.Count - 500, RangeTo = ohlcvData.Count };
         dc.Save().Wait();
+
+        
+        Console.WriteLine(stats.ToString());
     }
 
-    private Datacube CreateDatacube(string ticker, IExchange exchange)
+    private Datacube CreateDatacube(string ticker, IBroker exchange)
     {
         Datacube dc = new();
         dc.Title = $"{ticker} - {exchange.GetType().Name}";
         dc.Chart.IndexBased = true;
-        dc.Settings = new Settings { RangeFrom = 0, RangeTo = 100 };
 
         _sb.Indicators.ForEach(indicator => {
             Chart chart = new();

@@ -6,7 +6,7 @@
     },
     "Testing": {
       "commandName": "Project",
-      "commandLineArgs": "FirstStrategy testing --ticker BTCUSDT -d 1"
+      "commandLineArgs": "FirstStrategy testing --ticker ATOMUSDT -d 100"
     },
     "Report": {
       "commandName": "Project",

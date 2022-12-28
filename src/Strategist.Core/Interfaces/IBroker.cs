@@ -2,7 +2,7 @@
 
 namespace Strategist.Core.Interfaces;
 
-internal interface IExchange
+internal interface IBroker
 {
     public Task<List<Ohlcv>> GetOhlcvData(string ticker, Interval interval, int days = 0, int gap = 0);
 }

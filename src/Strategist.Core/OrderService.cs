@@ -2,14 +2,14 @@
 
 namespace Strategist.Core;
 
-public class OrdersService
+internal class OrderService
 {
     private readonly StrategyBase _sb;
 
-    private List<Order> orders = new();
+    internal List<Order> Orders = new();
     private int ordersCount;
 
-    public OrdersService(StrategyBase sb)
+    public OrderService(StrategyBase sb)
     {
         _sb = sb;
     }
@@ -24,7 +24,7 @@ public class OrdersService
         order.OpenTime = _sb.lastCandle.Timestamp;
         order.OpenPrice = _sb.lastCandle.Close;
 
-        orders.Add(order);
+        Orders.Add(order);
 
         return order;
     }
@@ -37,18 +37,18 @@ public class OrdersService
         order.CloseType = Models.Type.Exit;
     }
 
-    internal void AddToDatacube(ref Datacube dc)
+    internal Chart GetChart()
     {
         Chart chart = new();
         chart.Name = "Orders";
         chart.Type = "Orders";
         chart.Settings.zIndex = 1;
 
-        var lastOrder = orders.Last();
+        var lastOrder = Orders.Last();
         if (lastOrder.CloseTime == 0)
-            orders.Remove(lastOrder);
+            Orders.Remove(lastOrder);
 
-        orders.ForEach(o => {
+        Orders.ForEach(o => {
             List<object> item = new() { 
                 o.CloseTime, 
                 o.OrderId, 
@@ -63,6 +63,6 @@ public class OrdersService
             chart.Data.Add(item);
         });
 
-        dc.OnChart.Add(chart);
+        return chart;
     }
 }

@@ -1,4 +1,6 @@
 {
-  "Exchange": "Binance",
-  "Interval": "FifteenMinutes"
+  "Broker": "Binance",
+  "Interval": "15m",
+  "Fee": 0.02,
+  "Amount": 500
 }

@@ -41,7 +41,7 @@ public class MyStrategy : StrategyBase
             openFast = (decimal)fast;
             openPrice = c.Open;
 
-            order = Orders.CreateOrder(OpenType.Buy);
+            order = CreateOrder(OpenType.Sell);
         } 
         if (isOrder && c.Close > fast)
         {
@@ -49,7 +49,7 @@ public class MyStrategy : StrategyBase
             Console.WriteLine($"{openFast} > {openPrice} : {c.Close} > {fast} = {counter}");
             counter = 0;
 
-            Orders.CloseOrder(order);
+            CloseOrder(order);
         }
 
         if (isOrder)
