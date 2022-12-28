@@ -39,6 +39,9 @@ internal class OrderService
 
     internal Chart GetChart()
     {
+        if (Orders.Count == 0)
+            return null;
+
         Chart chart = new();
         chart.Name = "Orders";
         chart.Type = "Orders";

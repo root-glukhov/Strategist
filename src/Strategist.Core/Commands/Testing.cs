@@ -42,19 +42,26 @@ internal class Testing
             });
         });
 
-        Chart ordersChart = _sb.OrderService.GetChart();
-        dc.OnChart.Add(ordersChart);
+        
 
-        var bService = new BalanceService(_sb);
-        var stats = bService.GetStats(_sb.OrderService.Orders);
-        Chart balanceChart = bService.GetChart();
-        dc.OffChart.Add(balanceChart);
+        if (_sb.OrderService.Orders.Count > 0)
+        {
+            Chart ordersChart = _sb.OrderService.GetChart();
+            dc.OnChart.Add(ordersChart);
+
+            var bService = new BalanceService(_sb);
+            var stats = bService.GetStats(_sb.OrderService.Orders);
+            Chart balanceChart = bService.GetChart();
+            dc.OffChart.Add(balanceChart);
+            Console.WriteLine(stats.ToString());
+        }
+        
 
         dc.Settings = new Settings { RangeFrom = ohlcvData.Count - 500, RangeTo = ohlcvData.Count };
         dc.Save().Wait();
 
         
-        Console.WriteLine(stats.ToString());
+        
     }
 
     private Datacube CreateDatacube(string ticker, IBroker exchange)

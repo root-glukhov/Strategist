@@ -1,18 +1,15 @@
 ﻿using Strategist.Core.Models;
 using Strategist.Core;
+using Strategist.Indicators;
 
 public class MyStrategy : StrategyBase
 {
-    decimal? fast;
-    bool isOrder = false;
-
-    int counter = 0;
-    decimal openFast = 0;
-    decimal openPrice = 0;
-
+    SMA fastSma = new SMA(20);
+    SMA slowSma = new SMA(60);
+    List<decimal> fastSmaData = new() { 0, 0, 0 };
+    List<decimal> slowSmaData = new() { 0, 0, 0 };
+    bool allowOrders = true;
     Order order;
-
-    SMA sma = new SMA(20);
 
     public override void GetIndicators()
     {
@@ -24,7 +21,12 @@ public class MyStrategy : StrategyBase
                 new Figure()
                 {
                     Name = "fast",
-                    GetValue = () => fast
+                    GetValue = () => fastSmaData[0]
+                },
+                new Figure()
+                {
+                    Name = "slow",
+                    GetValue = () => slowSmaData[0]
                 }
             },
             InChart = true
@@ -33,61 +35,50 @@ public class MyStrategy : StrategyBase
 
     public override void OnCandle(Ohlcv c)
     {
-        fast = sma.Update(c.Close);
+        fastSmaData.Insert(0, fastSma.Next(c.Close).GetValueOrDefault());
+        if (fastSmaData.Count > 3)
+            fastSmaData.Remove(fastSmaData.Last());
 
-        if (!isOrder && fast > c.Open)
+        slowSmaData.Insert(0, slowSma.Next(c.Close).GetValueOrDefault());
+        if (slowSmaData.Count > 3)
+            slowSmaData.Remove(slowSmaData.Last());
+
+        if (fastSmaData[0] == 0 || slowSmaData[0] == 0)
+            return;
+
+        decimal percent = ((fastSmaData[0] - slowSmaData[0]) / slowSmaData[0]) * 100;
+        //decimal percent = (slowSmaData[0] - fastSmaData[0]) / Math.Abs(fastSmaData[0]) * 100;
+
+        if (percent < 1)
         {
-            isOrder = true;
-            openFast = (decimal)fast;
-            openPrice = c.Open;
-
-            order = CreateOrder(OpenType.Sell);
-        } 
-        if (isOrder && c.Close > fast)
-        {
-            isOrder = false;
-            Console.WriteLine($"{openFast} > {openPrice} : {c.Close} > {fast} = {counter}");
-            counter = 0;
-
-            CloseOrder(order);
+            allowOrders = true;
         }
 
-        if (isOrder)
-            counter++;
-    }
-}
 
-public class SMA
-{
-    private readonly int _period;
-    private readonly decimal[] _values;
+        if (
+            fastSmaData[0] > fastSmaData[1] &&
+            slowSmaData[0] > slowSmaData[1] &&
+            fastSmaData[0] > slowSmaData[0] &&
+            percent >= 1.2m /*this.opts.openPercent*/ &&
+            allowOrders &&
+            order == null
+        )
+        {
+            CreateOrder(OpenType.Sell);
+            allowOrders = false;
+        }
 
-    private int _index = 0;
-    private decimal _sum = 0;
-    private bool visual = false;
-
-    public SMA(int period)
-    {
-        if (period <= 0) throw new ArgumentOutOfRangeException(nameof(period), "Must be greater than 0");
-
-        _period = period;
-        _values = new decimal[period];
-    }
-
-    public decimal? Update(decimal nextInput)
-    {
-        // calculate the new sum
-        _sum = _sum - _values[_index] + nextInput;
-
-        // overwrite the old value with the new one
-        _values[_index] = nextInput;
-
-        // increment the index (wrapping back to 0)
-        _index = (_index + 1) % _period;
-        if (_index == 0)
-            visual = true;
-
-        // calculate the average
-        return visual ? _sum / _period : null;
+        if (
+            fastSmaData[0] < fastSmaData[1] &&
+            slowSmaData[0] < slowSmaData[1] &&
+            fastSmaData[0] < slowSmaData[0] &&
+            percent >= 1.2m /*this.opts.openPercent*/ &&
+            order == null &&
+            allowOrders
+        )
+        {
+            CreateOrder(OpenType.Buy);
+            allowOrders = false;
+        }
     }
 }
