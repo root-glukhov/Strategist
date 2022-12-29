@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Strategist.Core.Commands;
 using Strategist.Core.Interfaces;
 using Strategist.Core.Models;
@@ -79,7 +78,7 @@ public abstract class StrategyBase
     #region Orders 
 
     public Order CreateOrder(OpenType openType) => OrderService.CreateOrder(openType);
-    public void CloseOrder(Order order) => OrderService.CloseOrder(order);
+    public Order CloseOrder(Order order) => OrderService.CloseOrder(order);
 
     #endregion
 

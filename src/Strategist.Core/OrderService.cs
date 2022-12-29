@@ -16,7 +16,7 @@ internal class OrderService
 
     public Order CreateOrder(OpenType type)
     {
-        Console.WriteLine($"Ордер {type} создан!");
+        
 
         var order = new Order();
         order.OrderId = ordersCount++;
@@ -25,16 +25,16 @@ internal class OrderService
         order.OpenPrice = _sb.lastCandle.Close;
 
         Orders.Add(order);
-
         return order;
     }
 
-    public void CloseOrder(Order order)
+    public Order CloseOrder(Order order)
     {
         order.Type = Models.Type.Both;
         order.CloseTime = _sb.lastCandle.Timestamp;
         order.ClosePrice = _sb.lastCandle.Close;
         order.CloseType = Models.Type.Exit;
+        return order;
     }
 
     internal Chart GetChart()

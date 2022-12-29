@@ -1,16 +1,12 @@
 ﻿using Binance.Net.Interfaces;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Xml.Linq;
-using CryptoExchange.Net.CommonObjects;
-using String = System.String;
-using Newtonsoft.Json.Linq;
-using System.Text.Json;
 using Newtonsoft.Json;
 
 namespace Strategist.Core.Models;
 
 public class Ohlcv
 {
+    [JsonIgnore]
+    public DateTime Date {get; private set;}
     public long Timestamp { get; private set; }
     public decimal Open { get; private set; }
     public decimal High { get; private set; }
@@ -26,6 +22,7 @@ public class Ohlcv
         {
             ohlcvList.Add(new Ohlcv()
             {
+                Date = kline.OpenTime,
                 Timestamp = DateTimeToTimestamp(kline.OpenTime),
                 Open = kline.OpenPrice,
                 High = kline.HighPrice,

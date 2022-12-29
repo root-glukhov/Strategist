@@ -1,4 +1,6 @@
-﻿namespace Strategist.Core.Models;
+﻿using Newtonsoft.Json;
+
+namespace Strategist.Core.Models;
 
 public enum Type
 {
@@ -28,4 +30,9 @@ public class Order
     public Type CloseType;
     public decimal ClosePrice;
     public long OpenTime;
+
+    public override string ToString()
+    {
+        return $"{this.OrderId} {this.OpenType} {this.OpenTime} {this.OpenPrice} {this.CloseTime} {this.ClosePrice}";
+    }
 }

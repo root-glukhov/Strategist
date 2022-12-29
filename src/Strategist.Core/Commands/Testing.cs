@@ -57,7 +57,7 @@ internal class Testing
         }
         
 
-        dc.Settings = new Settings { RangeFrom = ohlcvData.Count - 500, RangeTo = ohlcvData.Count };
+        dc.Settings = new Settings { RangeFrom = 0/*ohlcvData.Count - 500*/, RangeTo = ohlcvData.Count };
         dc.Save().Wait();
 
         

@@ -7,7 +7,7 @@ public class SMA
 
     private int _index = 0;
     private decimal _sum = 0;
-    private bool visual = false;
+    //private bool visual = false;
 
     public SMA(int period)
     {
@@ -17,7 +17,7 @@ public class SMA
         _values = new decimal[period];
     }
 
-    public decimal? Next(decimal next)
+    public decimal Next(decimal next)
     {
         // calculate the new sum
         _sum = _sum - _values[_index] + next;
@@ -27,10 +27,11 @@ public class SMA
 
         // increment the index (wrapping back to 0)
         _index = (_index + 1) % _period;
-        if (_index == 0)
-            visual = true;
+        //if (_index == 0)
+        //    visual = true;
 
         // calculate the average
-        return visual ? _sum / _period : null;
+        // return visual ? _sum / _period : 0;
+        return _sum / _period;
     }
 }

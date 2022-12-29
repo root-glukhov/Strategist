@@ -11,7 +11,7 @@ internal class Stats
     public int LongRight;
     public int Short;
     public int ShortRight;
-    public int CandlesHandled;
+    //public int CandlesHandled;
 
     public override string ToString()
     {
@@ -23,7 +23,6 @@ internal class Stats
                $"Long:              {Long}\n" +
                $"LongRight:         {LongRight}\n" +
                $"Short:             {Short}\n" +
-               $"ShortRight:        {ShortRight}\n" +
-               $"CandlesHandled:    {CandlesHandled}";
+               $"ShortRight:        {ShortRight}\n";
     }
 }

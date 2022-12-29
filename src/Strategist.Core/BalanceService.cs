@@ -27,8 +27,6 @@ internal class BalanceService
             int dir = o.OpenType == OpenType.Buy ?  1 : -1;
             decimal profit = (o.ClosePrice - o.OpenPrice) * 1 /* lots */ * dir - fee;
 
-            Console.WriteLine($"{o.OrderId} {o.OpenType} {profit}");
-
             stats.Balance += profit;
             stats.Profit += profit;
 
