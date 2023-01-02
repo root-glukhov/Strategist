@@ -6,7 +6,7 @@
     },
     "Testing": {
       "commandName": "Project",
-      "commandLineArgs": "FirstStrategy testing --ticker BTCUSDT -d 100"
+      "commandLineArgs": "FirstStrategy test --ticker BTCUSDT --days 100 --gap 50"
     },
     "Report": {
       "commandName": "Project",

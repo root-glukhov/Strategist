@@ -1,14 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System.Text;
 
-namespace Strategist.Core.Models;
+namespace Strategist.Domain;
 
-internal class Datacube
+public class Datacube
 {
     [JsonProperty("title", NullValueHandling = NullValueHandling.Ignore)]
     public string? Title { get; set; }
     [JsonProperty("chart")]
-    public Chart Chart { get; init; } = new() { Type = "Candles" };
+    public Chart Chart { get; init; } = new(type: "Candles");
     [JsonProperty("onchart")]
     public List<Chart> OnChart { get; init; } = new();
     [JsonProperty("offchart")]
@@ -25,13 +25,13 @@ internal class Datacube
         string json = JsonConvert.SerializeObject(this);
         byte[] buffer = Encoding.Default.GetBytes(json);
         await fstream.WriteAsync(buffer, 0, buffer.Length);
-        Console.WriteLine("Текст записан в файл");
+        Console.WriteLine("The data has been saved to a file.");
 
         fstream.Dispose();
     }
 }
 
-internal class Chart
+public class Chart
 {
     [JsonProperty("name", NullValueHandling = NullValueHandling.Ignore)]
     public string? Name;
@@ -44,14 +44,16 @@ internal class Chart
     [JsonProperty("settings", NullValueHandling = NullValueHandling.Ignore)]
     public Settings Settings;
 
-    public Chart()
+    public Chart(string type, string? name = null)
     {
+        Name = name;
+        Type = type;
         Data = new();
         Settings = new Settings();
     }
 }
 
-internal class Settings
+public class Settings
 {
     [JsonProperty("z-index", NullValueHandling = NullValueHandling.Ignore)]
     public int? zIndex;

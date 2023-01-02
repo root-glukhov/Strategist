@@ -8,7 +8,17 @@
   <ItemGroup>
     <PackageReference Include="Binance.Net" Version="8.3.0" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="7.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+    <PackageReference Include="Spectre.Console" Version="0.45.1-preview.0.49" />
     <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Strategist.Domain\Strategist.Domain.csproj" />
   </ItemGroup>
 
 </Project>

@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Strategist.Core.Models;
+namespace Strategist.Domain;
 
 public enum FigureType
 {

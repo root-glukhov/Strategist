@@ -8,19 +8,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Plugins\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj" />
     <ProjectReference Include="..\..\src\Plugins\Strategist.Plugins.Report\Strategist.Plugins.Report.csproj" />
     <ProjectReference Include="..\..\src\Strategist.Core\Strategist.Core.csproj" />
-    <ProjectReference Include="..\..\src\Strategist.Indicators\Strategist.Indicators.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Configuration\appsettings.json">
+    <None Update="Properties\secrets.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\botconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Configuration\botoptions.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Configuration\example.appsettings.json">
+    <None Update="Properties\example.secrets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -1,4 +1,4 @@
-﻿namespace Strategist.Core.Models;
+﻿namespace Strategist.Domain;
 
 internal class Stats
 {

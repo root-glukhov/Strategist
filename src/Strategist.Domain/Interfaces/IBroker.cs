@@ -1,8 +1,6 @@
-﻿using Strategist.Core.Models;
+﻿namespace Strategist.Domain;
 
-namespace Strategist.Core.Interfaces;
-
-internal interface IBroker
+public interface IBroker
 {
     public Task<List<Ohlcv>> GetOhlcvData(string ticker, Interval interval, int days = 0, int gap = 0);
 }

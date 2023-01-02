@@ -1,10 +1,17 @@
-﻿using System.Diagnostics;
+﻿using System.CommandLine;
+using System.Diagnostics;
 
 namespace Strategist.Core.Commands;
 
-internal class Report
+internal class ReportCommand : Command
 {
-    public Report()
+    public ReportCommand() 
+        : base("report", "Visual chart report.")
+    {
+        this.SetHandler(Handle);
+    }
+
+    private void Handle()
     {
         try
         {
