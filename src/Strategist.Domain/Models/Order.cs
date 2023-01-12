@@ -31,6 +31,10 @@ public class Order
 
     public override string ToString()
     {
-        return $"{this.OrderId} {this.OpenType} {this.OpenTime} {this.OpenPrice} {this.CloseTime} {this.ClosePrice}";
+        int dir = OpenType == OpenType.Buy ? 1 : -1;
+        decimal profit = (ClosePrice - OpenPrice) * dir;
+        decimal profitPercent = (ClosePrice / (OpenPrice * 0.01m) - 100) * dir;
+
+        return $"{OrderId} {OpenType}\t{profit.ToString("#.00")}|{profitPercent.ToString("0.00")}%";
     }
 }

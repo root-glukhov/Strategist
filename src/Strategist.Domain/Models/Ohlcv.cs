@@ -20,5 +20,13 @@ public class Ohlcv
         return timestamp * 1000;
     }
 
-    public override string ToString() => JsonConvert.SerializeObject(this);
+    public override string ToString() => $"{Date} O:{Open.ToString("#.00")} H:{High.ToString("#.00")} L:{Low.ToString("#.00")} C:{Close.ToString("#.00")} V:{Volume.ToString("#.00")}";
+}
+
+public static class OhlcvExtension
+{
+    public static List<object> ToObject(this Ohlcv ohlcv)
+    {
+        return new() { ohlcv.Timestamp, ohlcv.Open, ohlcv.High, ohlcv.Low, ohlcv.Close, ohlcv.Volume };
+    }
 }

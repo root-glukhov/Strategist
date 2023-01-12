@@ -13,15 +13,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{FD87
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Plugins.Report", "src\Plugins\Strategist.Plugins.Report\Strategist.Plugins.Report.csproj", "{DC736D9A-5D02-420C-8578-679B38571843}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Plugins.Indicators", "src\Plugins\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj", "{0A23C947-66C1-4CBA-9E07-9911D84F6D98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Plugins.Indicators", "src\Plugins\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj", "{0A23C947-66C1-4CBA-9E07-9911D84F6D98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Domain", "src\Strategist.Domain\Strategist.Domain.csproj", "{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Domain", "src\Strategist.Domain\Strategist.Domain.csproj", "{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AD8BCFF-F9A2-4AE9-9574-2CE5644D9D9F}"
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Plugins.TakeStop", "src\Plugins\Strategist.Plugins.TakeStop\Strategist.Plugins.TakeStop.csproj", "{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -57,6 +63,7 @@ Global
 		{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC} = {60AA093A-5841-475B-A60E-441C5D872FA3}
 		{DC736D9A-5D02-420C-8578-679B38571843} = {FD87E999-A47A-4383-965C-C5A8ABC2DC67}
 		{0A23C947-66C1-4CBA-9E07-9911D84F6D98} = {FD87E999-A47A-4383-965C-C5A8ABC2DC67}
+		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC} = {FD87E999-A47A-4383-965C-C5A8ABC2DC67}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {380F33B1-3A52-4D85-B39B-6878F35FE91F}
