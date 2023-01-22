@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Newtonsoft.Json;
+using Strategist.Common;
 using Strategist.Core.Commands;
-using Strategist.Domain;
+using Strategist.Core.Transports;
 using System.CommandLine;
 using System.CommandLine.Parsing;
 
@@ -8,30 +9,56 @@ namespace Strategist.Core;
 
 public abstract class StrategyBase
 {
-    #region Static Objects
+    #region Static fields 
 
-    internal static Dictionary<string, object> botConfig;
-    public static Ohlcv lastCandle;
-
-    #endregion
-
-    #region Virtual Methods
-
-    public virtual void Registration() { }
-    public virtual void OnTick(Ohlcv tick) { }
-    public virtual void OnCandle(Ohlcv c) { }
+    public static Dictionary<string, object> BotConfig;
+    public static Ohlcv[] Candles = new Ohlcv[10];
 
     #endregion
 
-    public List<Indicator> Indicators = new();
+    #region Virtual methods
 
-    public void Start()
+    public virtual void OnTick(Ohlcv ohlcv) { }
+    public virtual void OnCandle(Ohlcv ohlcv) { }
+    public virtual void OnCreateOrder(Order order) { }
+    public virtual void OnClosedOrder(Order order) { }
+
+    #endregion
+
+    #region Ctor
+
+    public StrategyBase()
     {
-        RootCommand root = new RootCommand();
+        string json = new StreamReader("Properties/botconfig.json").ReadToEnd();
+        BotConfig = JsonConvert.DeserializeObject<Dictionary<string, object>>(json)!;
+
+        RootCommand root = new();
+        root.AddCommand(new ExecuteCommand(this));
         root.AddCommand(new TestCommand(this));
-        root.AddCommand(new ReportCommand());
 
         string[] args = Environment.GetCommandLineArgs().Skip(1).ToArray();
         root.Invoke(args);
     }
+
+    #endregion
+
+    #region Internal functions
+
+    internal ITransport GetBroker()
+    {
+        string brokerString = BotConfig["Broker"].ToString()!;
+
+        return brokerString.ToLower() switch {
+            "binance" => new BinanceTransport(this),
+            _ => throw new ArgumentOutOfRangeException("'Broker' parameter not specified in botconfig.json"),
+        };
+    }
+
+    internal void AddCandle(Ohlcv ohlcv)
+    {
+        Array.Copy(Candles, 0, Candles, 1, Candles.Length - 1);
+        Candles[0] = ohlcv;
+    }
+
+    #endregion
 }

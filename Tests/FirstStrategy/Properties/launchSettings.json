@@ -4,13 +4,13 @@
       "commandName": "WSL2",
       "distributionName": ""
     },
-    "Testing": {
+    "Test": {
       "commandName": "Project",
-      "commandLineArgs": "FirstStrategy test --ticker BTCUSDT --days 10 --gap 50"
+      "commandLineArgs": "FirstStrategy test --ticker BTCUSDT --days 30"
     },
-    "Report": {
+    "Execute": {
       "commandName": "Project",
-      "commandLineArgs": "report"
+      "commandLineArgs": "FirstStrategy execute"
     }
   }
 }

@@ -1,6 +1,7 @@
 {
   "Broker": "Binance",
   "Interval": "15m",
+  "Amount": 500,
   "Fee": 0.02,
-  "Amount": 500
+  "Stop": 0.03
 }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -8,20 +8,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Plugins\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj" />
-    <ProjectReference Include="..\..\src\Plugins\Strategist.Plugins.Report\Strategist.Plugins.Report.csproj" />
-    <ProjectReference Include="..\..\src\Plugins\Strategist.Plugins.TakeStop\Strategist.Plugins.TakeStop.csproj" />
     <ProjectReference Include="..\..\src\Strategist.Core\Strategist.Core.csproj" />
+    <ProjectReference Include="..\..\src\Strategist.Plugins.TakeStop\Strategist.Plugins.TakeStop.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Properties\secrets.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Update="Properties\botconfig.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Properties\example.secrets.json">
+    <None Update="Properties\secrets.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

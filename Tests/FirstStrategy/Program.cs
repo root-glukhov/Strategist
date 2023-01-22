@@ -1,4 +1,6 @@
-﻿MyStrategy _strategy = new MyStrategy();
+﻿using FirstStrategy;
 
-Console.WriteLine("Done.");
-Console.ReadLine();
+MyStrategy strategy = new();
+Console.Read();
+
+

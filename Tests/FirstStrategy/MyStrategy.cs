@@ -1,115 +1,45 @@
-﻿using Strategist.Core;
+﻿using Strategist.Common;
+using Strategist.Core;
 using Strategist.Core.Services;
-using Strategist.Domain;
-using Strategist.Plugins.Indicators;
 using Strategist.Plugins.TakeStop;
 
-public class MyStrategy : StrategyBase
-{
-    TrailingStop trailingStop = new TrailingStop();
+namespace FirstStrategy;
 
-    SMA fastSma = new SMA(20);
-    SMA slowSma = new SMA(60);
-    List<decimal> fastSmaData = new() { 0, 0, 0 };
-    List<decimal> slowSmaData = new() { 0, 0, 0 };
-    bool allowOrders = false;
+internal class MyStrategy : StrategyBase
+{
     Order? order;
-    int orderCandleCounter;
+    TrailingStop trailing;
+
+    int counter;
+    Random random;
 
     public MyStrategy()
     {
-        Indicators.Add(new Indicator()
-        {
-            Name = "SMA",
-            Figures = new[]
-            {
-                new Figure()
-                {
-                    Name = "fast",
-                    GetValue = () => fastSmaData[0]
-                },
-                new Figure()
-                {
-                    Name = "slow",
-                    GetValue = () => slowSmaData[0]
-                }
-            },
-            InChart = true
-        });
-
-        // Start strategy
-        Start();
+        random = new Random();
+        trailing = new TrailingStop();
     }
 
-    public override void OnCandle(Ohlcv c)
+    public override void OnTick(Ohlcv ohlcv)
     {
-    }
-
-    public override void OnTick(Ohlcv c)
-    {
-        decimal fastSmaNext = fastSma.Next(c.Close);
-        decimal slowSmaNext = slowSma.Next(c.Close);
-
-        fastSmaData.Insert(0, fastSmaNext);
-        if (fastSmaData.Count > 3)
-            fastSmaData.Remove(fastSmaData.Last());
-
-        slowSmaData.Insert(0, slowSmaNext);
-        if (slowSmaData.Count > 3)
-            slowSmaData.Remove(slowSmaData.Last());
-
-        if (fastSmaData[0] == 0 || slowSmaData[0] == 0)
-            return;
-
-        decimal percent = Math.Abs(((fastSmaData[0] - slowSmaData[0]) / slowSmaData[0]) * 100);
-
-        if (percent < 1)
+        if(order == null)
         {
-            allowOrders = true;
+            OrderType randomOrderType = random.Next(2) == 0 ? OrderType.Buy : OrderType.Sell;
+            order = OrderService.CreateOrder(randomOrderType);
         }
-
-        if (
-            fastSmaData[0] > fastSmaData[1] &&
-            slowSmaData[0] > slowSmaData[1] &&
-            fastSmaData[0] > slowSmaData[0] &&
-            percent >= 1.2m /*this.opts.openPercent*/ &&
-            allowOrders &&
-            order == null
-        )
+        else
         {
-            order = OrderService.CreateOrder(OpenType.Sell);
-            allowOrders = false;
-        }
-
-        if (
-            fastSmaData[0] < fastSmaData[1] &&
-            slowSmaData[0] < slowSmaData[1] &&
-            fastSmaData[0] < slowSmaData[0] &&
-            percent >= 1.2m /*this.opts.openPercent*/ &&
-            order == null &&
-            allowOrders
-        )
-        {
-            order = OrderService.CreateOrder(OpenType.Buy);
-            allowOrders = false;
-        }
-
-        if (order != null)
-        {
-            orderCandleCounter++;
-            if (orderCandleCounter >= 4 * 9)
+            counter++;
+            if(counter >= 40)
             {
-                decimal stop = order.OpenType == OpenType.Buy ? c.Close - c.Close * 0.10m : c.Close * 1.10m;
-
-                var closedOrder = trailingStop.SetForOrder(order, stop);
-                if (closedOrder != null)
-                {
-                    Console.WriteLine($"{closedOrder} {orderCandleCounter}");
-                    order = null;
-                    allowOrders = true;
-                    orderCandleCounter = 0;
-                }
+                trailing.SetForPercent(order);
             }
-        }
+        } 
+    }
+
+    public override void OnClosedOrder(Order closedOrder)
+    {
+        order = null;
+        counter = 0;
+        Console.WriteLine(closedOrder + "\n");
     }
 }

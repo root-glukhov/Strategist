@@ -1,41 +1,66 @@
 ﻿using Binance.Net.Clients;
-using Binance.Net.Enums;
-using Binance.Net.Interfaces;
 using Binance.Net.Objects;
 using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.Configuration;
+using Binance.Net.Enums;
+using Binance.Net.Interfaces;
+using Strategist.Common;
 using Spectre.Console;
-using Strategist.Domain;
+using Strategist.Core.Extensions;
 
 namespace Strategist.Core.Transports;
 
-internal class BinanceTransport : IBroker
+internal class BinanceTransport : ITransport
 {
-    private IConfigurationRoot _config { get; set; }
-    private BinanceClient _client { get; set; }
+    private readonly StrategyBase _sb;
+    private BinanceClient Client { get; set; }
+    private BinanceSocketClient SocketClient { get; set; }
 
-    public BinanceTransport()
+    public BinanceTransport(StrategyBase sb)
     {
-        _config = new ConfigurationBuilder()
+        _sb = sb;
+
+        IConfigurationRoot _config = new ConfigurationBuilder()
             .AddJsonFile($"Properties/secrets.json")
             .Build();
 
-        _client = new BinanceClient(new BinanceClientOptions
-        {
-            ApiCredentials = new ApiCredentials(
-                _config.GetSection("Binance:ApiKey").Value!,
-                _config.GetSection("Binance:ApiSecret").Value!),
+        string apiKey = _config.GetSection("Binance:ApiKey").Value!;
+        string apiSecret = _config.GetSection("Binance:ApiSecret").Value!;
+
+        Client = new BinanceClient(new BinanceClientOptions {
+            ApiCredentials = new ApiCredentials(apiKey, apiSecret)
+        });
+
+        SocketClient = new BinanceSocketClient(new BinanceSocketClientOptions {
+            ApiCredentials = new ApiCredentials(apiKey, apiSecret)
         });
     }
 
-    public async Task<List<Ohlcv>> GetOhlcvData(string ticker, Interval interval, int days = 0, int gap = 0)
+    public async void GetTicks()
     {
+        await SocketClient.UsdFuturesStreams
+            .SubscribeToKlineUpdatesAsync("BTCUSDT", StrategyBase.BotConfig["Interval"].ToString()!.ToKlineInterval(), (dataEvent) =>
+            {
+                IBinanceStreamKline kline = dataEvent.Data.Data;
+                Ohlcv ohlcv = kline.ToOhlcv();
+
+                _sb.OnTick(ohlcv);
+
+                if (kline.Final)
+                    _sb.OnCandle(ohlcv);
+            });
+    }
+
+    public async Task<List<Ohlcv>> GetHistoryAsync(string ticker, int days = 1, int gap = 0)
+    {
+        string intervalString = StrategyBase.BotConfig["Interval"].ToString()!;
+        Interval interval = intervalString.ToInterval();
+
         DateTime utcNow = DateTime.UtcNow;
         DateTime? startTime = days > 0 ? utcNow.AddDays(-days - gap) : null;
         DateTime? endTime = gap > 0 ? utcNow.AddDays(-gap) :
             utcNow.AddTicks(
-                -(utcNow.Ticks % TimeSpan.FromSeconds((double)interval).Ticks)
-            );
+                -(utcNow.Ticks % TimeSpan.FromSeconds((double)interval).Ticks));
 
         List<IBinanceKline> klinesData = new();
 
@@ -47,41 +72,22 @@ internal class BinanceTransport : IBroker
                 new RemainingTimeColumn(),
                 new SpinnerColumn(),
             })
-        .StartAsync(async ctx => {
-            ProgressTask task = ctx.AddTask("Load klines", maxValue: days);
+            .StartAsync(async ctx => {
+                ProgressTask task = ctx.AddTask("Load history", maxValue: days);
 
-            do
-            {
-                var klineChunk = await _client.UsdFuturesApi.ExchangeData.GetKlinesAsync(ticker, (KlineInterval)interval, startTime, endTime);
-                klinesData.AddRange(klineChunk.Data);
-                task.Increment(5.2);
-                startTime = klinesData.Last().CloseTime;
-            }
-            while (startTime < endTime);
-        });
-
-        return KlineToOhlcv(klinesData);
-    }
-
-    public static List<Ohlcv> KlineToOhlcv(IEnumerable<IBinanceKline> klines)
-    {
-        List<Ohlcv> ohlcvList = new();
-
-        foreach (var kline in klines)
-        {
-            ohlcvList.Add(new Ohlcv()
-            {
-                Date = kline.OpenTime,
-                Timestamp = Ohlcv.DateTimeToTimestamp(kline.OpenTime),
-                Open = kline.OpenPrice,
-                High = kline.HighPrice,
-                Low = kline.LowPrice,
-                Close = kline.ClosePrice,
-                Volume = kline.Volume,
+                do
+                {
+                    var klineChunk = await Client.UsdFuturesApi.ExchangeData.GetKlinesAsync(
+                        ticker, (KlineInterval)interval, startTime, endTime);
+                    klinesData.AddRange(klineChunk.Data);
+                    task.Increment(5.2);
+                    startTime = klinesData.Last().CloseTime;
+                }
+                while (startTime < endTime);
             });
-        }
 
-        return ohlcvList;
+        List<Ohlcv> ohlcvData = new();
+        klinesData.ForEach(kline => ohlcvData.Add(kline.ToOhlcv()));
+        return ohlcvData;
     }
 }
-

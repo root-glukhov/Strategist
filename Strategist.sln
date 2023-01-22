@@ -1,29 +1,19 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.4.32916.344
+VisualStudioVersion = 17.5.33209.295
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Core", "src\Strategist.Core\Strategist.Core.csproj", "{1AAFF067-558E-452E-938E-9DDE85517BC4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Core", "src\Strategist.Core\Strategist.Core.csproj", "{CE7F6C6B-E019-4D8C-B700-BA1B319EAA3C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{60AA093A-5841-475B-A60E-441C5D872FA3}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{AA52A799-78C8-431B-9C9C-0F4B11266222}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstStrategy", "Tests\FirstStrategy\FirstStrategy.csproj", "{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Plugins.TakeStop", "src\Strategist.Plugins.TakeStop\Strategist.Plugins.TakeStop.csproj", "{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugins", "Plugins", "{FD87E999-A47A-4383-965C-C5A8ABC2DC67}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0E4389FD-4BF4-4B2B-82E3-35BB175627BC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Plugins.Report", "src\Plugins\Strategist.Plugins.Report\Strategist.Plugins.Report.csproj", "{DC736D9A-5D02-420C-8578-679B38571843}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstStrategy", "Tests\FirstStrategy\FirstStrategy.csproj", "{73DF6529-BBB5-4C42-8EEB-509DE24B680D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Plugins.Indicators", "src\Plugins\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj", "{0A23C947-66C1-4CBA-9E07-9911D84F6D98}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Domain", "src\Strategist.Domain\Strategist.Domain.csproj", "{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{2AD8BCFF-F9A2-4AE9-9574-2CE5644D9D9F}"
-	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Plugins.TakeStop", "src\Plugins\Strategist.Plugins.TakeStop\Strategist.Plugins.TakeStop.csproj", "{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Common", "src\Strategist.Common\Strategist.Common.csproj", "{C529410B-F0D6-486D-ADCC-00E251AF2DDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,41 +21,31 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1AAFF067-558E-452E-938E-9DDE85517BC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1AAFF067-558E-452E-938E-9DDE85517BC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1AAFF067-558E-452E-938E-9DDE85517BC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1AAFF067-558E-452E-938E-9DDE85517BC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DC736D9A-5D02-420C-8578-679B38571843}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DC736D9A-5D02-420C-8578-679B38571843}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DC736D9A-5D02-420C-8578-679B38571843}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DC736D9A-5D02-420C-8578-679B38571843}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0A23C947-66C1-4CBA-9E07-9911D84F6D98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0A23C947-66C1-4CBA-9E07-9911D84F6D98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0A23C947-66C1-4CBA-9E07-9911D84F6D98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0A23C947-66C1-4CBA-9E07-9911D84F6D98}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07650EAC-80D7-48FA-9A2F-D01AC6AB0C50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE7F6C6B-E019-4D8C-B700-BA1B319EAA3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE7F6C6B-E019-4D8C-B700-BA1B319EAA3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE7F6C6B-E019-4D8C-B700-BA1B319EAA3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE7F6C6B-E019-4D8C-B700-BA1B319EAA3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73DF6529-BBB5-4C42-8EEB-509DE24B680D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73DF6529-BBB5-4C42-8EEB-509DE24B680D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73DF6529-BBB5-4C42-8EEB-509DE24B680D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73DF6529-BBB5-4C42-8EEB-509DE24B680D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{5B622B1C-7AE0-4509-AF0E-DC4BA844B8EC} = {60AA093A-5841-475B-A60E-441C5D872FA3}
-		{DC736D9A-5D02-420C-8578-679B38571843} = {FD87E999-A47A-4383-965C-C5A8ABC2DC67}
-		{0A23C947-66C1-4CBA-9E07-9911D84F6D98} = {FD87E999-A47A-4383-965C-C5A8ABC2DC67}
-		{29AB9DBF-83AC-4AC2-9DA7-51FF84C622DC} = {FD87E999-A47A-4383-965C-C5A8ABC2DC67}
+		{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE} = {AA52A799-78C8-431B-9C9C-0F4B11266222}
+		{73DF6529-BBB5-4C42-8EEB-509DE24B680D} = {0E4389FD-4BF4-4B2B-82E3-35BB175627BC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {380F33B1-3A52-4D85-B39B-6878F35FE91F}
+		SolutionGuid = {7359A0E5-7143-4650-A9E6-50E79E4A42A7}
 	EndGlobalSection
 EndGlobal
