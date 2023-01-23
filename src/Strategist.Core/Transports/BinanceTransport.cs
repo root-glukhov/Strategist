@@ -39,8 +39,11 @@ internal class BinanceTransport : ITransport
 
     public async void GetTicks()
     {
+        string intervalString = StrategyBase.BotConfig["Interval"].ToString()!;
+        KlineInterval klineInterval = intervalString.ToKlineInterval();
+
         await SocketClient.UsdFuturesStreams
-            .SubscribeToKlineUpdatesAsync("BTCUSDT", StrategyBase.BotConfig["Interval"].ToString()!.ToKlineInterval(), (dataEvent) =>
+            .SubscribeToKlineUpdatesAsync("BTCUSDT", klineInterval, (dataEvent) =>
             {
                 IBinanceStreamKline kline = dataEvent.Data.Data;
                 Ohlcv ohlcv = kline.ToOhlcv();
@@ -55,13 +58,13 @@ internal class BinanceTransport : ITransport
     public async Task<List<Ohlcv>> GetHistoryAsync(string ticker, int days = 1, int gap = 0)
     {
         string intervalString = StrategyBase.BotConfig["Interval"].ToString()!;
-        Interval interval = intervalString.ToInterval();
+        KlineInterval klineInterval = intervalString.ToKlineInterval();
 
         DateTime utcNow = DateTime.UtcNow;
         DateTime? startTime = days > 0 ? utcNow.AddDays(-days - gap) : null;
         DateTime? endTime = gap > 0 ? utcNow.AddDays(-gap) :
             utcNow.AddTicks(
-                -(utcNow.Ticks % TimeSpan.FromSeconds((double)interval).Ticks));
+                -(utcNow.Ticks % TimeSpan.FromSeconds((double)klineInterval).Ticks));
 
         List<IBinanceKline> klinesData = new();
 
@@ -70,18 +73,23 @@ internal class BinanceTransport : ITransport
                 new TaskDescriptionColumn(),
                 new ProgressBarColumn(),
                 new PercentageColumn(),
-                new RemainingTimeColumn(),
                 new SpinnerColumn(),
             })
             .StartAsync(async ctx => {
-                ProgressTask task = ctx.AddTask("Load history", maxValue: days);
+                int klineCount = 0;
+                int klineIntervalInt = (int)klineInterval;
+
+                for (int i = 0; i < days; i++)
+                    klineCount += 86400 / klineIntervalInt; // 86400 seconds in one day
+
+                ProgressTask task = ctx.AddTask($"Load {klineCount}({intervalString}) klines ", maxValue: klineCount);
 
                 do
                 {
                     var klineChunk = await Client.UsdFuturesApi.ExchangeData.GetKlinesAsync(
-                        ticker, (KlineInterval)interval, startTime, endTime);
+                        ticker, klineInterval, startTime, endTime);
                     klinesData.AddRange(klineChunk.Data);
-                    task.Increment(5.2);
+                    task.Increment((double)klineChunk.Data.Count());
                     startTime = klinesData.Last().CloseTime;
                 }
                 while (startTime < endTime);
@@ -94,25 +102,19 @@ internal class BinanceTransport : ITransport
 
     public async Task<Order> PlaceOrderAsync(Order order)
     {
-        // Order
-        // PlacedOrder
+        //var placedOrderCall = await Client.UsdFuturesApi.Trading.PlaceOrderAsync("BTCUSDT", OrderSide.Buy, FuturesOrderType.Market, 0.001m);
+        //BinanceFuturesPlacedOrder bfpOrder = placedOrderCall.Data;
 
-        // symbol
-        // OrderSide
-        // OrderType
-        // Quantity
+        //return new Order()
+        //{
+        //    Id = bfpOrder.Id,
+        //    Status = Common.OrderStatus.Placed,
+        //    OrderType = order.OrderType,
+        //    OpenTime = bfpOrder.UpdateTime,
+        //    OpenTimestamp = bfpOrder.UpdateTime.ToTimestamp(),
+        //    OpenPrice = bfpOrder.AveragePrice,
+        //};
 
-        var placedOrderCall = await Client.UsdFuturesApi.Trading.PlaceOrderAsync("BTCUSDT", OrderSide.Buy, FuturesOrderType.Market, 0.001m);
-        BinanceFuturesPlacedOrder bfpOrder = placedOrderCall.Data;
-
-        return new Order()
-        {
-            Id = bfpOrder.Id,
-            Status = Common.OrderStatus.Placed,
-            OrderType = order.OrderType,
-            OpenTime = bfpOrder.UpdateTime,
-            OpenTimestamp = bfpOrder.UpdateTime.ToTimestamp(),
-            OpenPrice = bfpOrder.AveragePrice,
-        };
+        throw new NotImplementedException();
     }
 }

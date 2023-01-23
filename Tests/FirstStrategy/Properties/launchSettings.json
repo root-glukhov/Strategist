@@ -6,7 +6,7 @@
     },
     "Test": {
       "commandName": "Project",
-      "commandLineArgs": "FirstStrategy test --ticker BTCUSDT --days 30"
+      "commandLineArgs": "FirstStrategy test --ticker BTCUSDT --days 11"
     },
     "Execute": {
       "commandName": "Project",
