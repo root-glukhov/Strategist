@@ -2,6 +2,7 @@
   "Broker": "Binance",
   "Interval": "15m",
   "Amount": 500,
+  "PercentOneOrder": 0.5,
   "Fee": 0.02,
   "Stop": 0.03
 }

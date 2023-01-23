@@ -1,49 +1,42 @@
 ﻿using Strategist.Common;
+using Strategist.Core.Models;
 
 namespace Strategist.Core.Services;
 
-public class Stats
+internal static class StatService
 {
-    public float StartBalance { get; set; }
-    public float MaxBalance { get; set; }
-    public float MinBalance { get; set; }
-    public float Balance { get; set; }
+    internal static StrategyBase _sb;
 
-    public int OrdersCount { get; set; }
-    public int Long { get; set; }
-    public int LongRight { get; set; }
-    public int Short { get; set; }
-    public int ShortRight { get; set; }
-
-    public override string ToString() =>
-        $"StartBalance: {StartBalance}\n"
-        + $"MaxBalance:   {MaxBalance}\n"
-        + $"MinBalance:   {MinBalance}\n"
-        + $"Balance:      {Balance}\n\n"
-        + $"OrdersCount:  {OrdersCount}\n"
-        + $"Long:         {Long}\n"
-        + $"LongRight:    {LongRight}\n"
-        + $"Short:        {Short}\n"
-        + $"ShortRight:   {ShortRight}";
-}
-
-public static class StatService
-{
-    public static StrategyBase _sb;
-
-    public static Stats GetStats()
+    internal static Stats GetStats()
     {
-        Stats stats = new();
+        float balance = Convert.ToSingle(StrategyBase.BotConfig["Amount"]);
+        Stats stats = new(balance);
         List<Order> orders = OrderService.GetOrders();
-        IEnumerable<Order> longOrders = orders.Where(x => x.OrderType == OrderType.Buy);
-        IEnumerable<Order> shortOrders = orders.Where(x => x.OrderType == OrderType.Sell);
-
         stats.OrdersCount = orders.Count;
-        stats.Long = longOrders.Count();
-        stats.LongRight = longOrders.Where(x => x.GetProfitPercent() > 0).Count();
-        stats.Short = shortOrders.Count();
-        stats.ShortRight = shortOrders.Where(x => x.GetProfitPercent() > 0).Count();
 
+        orders.ForEach(order =>
+        {
+            float profit = order.GetProfit().Item1;
+
+            stats.Balance += profit;
+            stats.MaxBalance = stats.Balance > stats.MaxBalance ? stats.Balance : stats.MaxBalance;
+            stats.MinBalance = stats.Balance < stats.MinBalance ? stats.Balance : stats.MinBalance;
+
+            if (order.OrderType == OrderType.Buy)
+            {
+                stats.Long++;
+                if (profit > 0)
+                    stats.LongRight++;
+            } 
+            else
+            { 
+                stats.Short++;
+                if (profit > 0)
+                    stats.ShortRight++;
+            }
+        });
+
+        stats.PercentProfit = (stats.Balance / balance - 1) * 100;
         return stats;
     }
 }

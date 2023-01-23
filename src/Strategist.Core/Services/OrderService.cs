@@ -15,13 +15,21 @@ public static class OrderService
 
     public static Order CreateOrder(OrderType orderType)
     {
+        Ohlcv curCandle = StrategyBase.Candles[0];
+
+        float amount = Convert.ToSingle(StrategyBase.BotConfig["Amount"]);
+        float percentOneOrder = Convert.ToSingle(StrategyBase.BotConfig["PercentOneOrder"]);
+        float lots = (amount * percentOneOrder) / (float)curCandle.Close;
+
         Order order = new()
         {
             Id = ordersCounter++,
+            Status = OrderStatus.Local,
+            Lots = lots,
             OrderType = orderType,
-            OpenTime = StrategyBase.Candles[0].Date,
-            OpenTimestamp = StrategyBase.Candles[0].Timestamp,
-            OpenPrice = StrategyBase.Candles[0].Close
+            OpenTime = curCandle.Date,
+            OpenTimestamp = curCandle.Timestamp,
+            OpenPrice = curCandle.Close
         };
 
         Orders.Add(order);

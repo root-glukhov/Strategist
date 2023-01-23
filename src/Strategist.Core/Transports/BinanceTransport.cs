@@ -7,6 +7,7 @@ using Binance.Net.Interfaces;
 using Strategist.Common;
 using Spectre.Console;
 using Strategist.Core.Extensions;
+using Binance.Net.Objects.Models.Futures;
 
 namespace Strategist.Core.Transports;
 
@@ -89,5 +90,29 @@ internal class BinanceTransport : ITransport
         List<Ohlcv> ohlcvData = new();
         klinesData.ForEach(kline => ohlcvData.Add(kline.ToOhlcv()));
         return ohlcvData;
+    }
+
+    public async Task<Order> PlaceOrderAsync(Order order)
+    {
+        // Order
+        // PlacedOrder
+
+        // symbol
+        // OrderSide
+        // OrderType
+        // Quantity
+
+        var placedOrderCall = await Client.UsdFuturesApi.Trading.PlaceOrderAsync("BTCUSDT", OrderSide.Buy, FuturesOrderType.Market, 0.001m);
+        BinanceFuturesPlacedOrder bfpOrder = placedOrderCall.Data;
+
+        return new Order()
+        {
+            Id = bfpOrder.Id,
+            Status = Common.OrderStatus.Placed,
+            OrderType = order.OrderType,
+            OpenTime = bfpOrder.UpdateTime,
+            OpenTimestamp = bfpOrder.UpdateTime.ToTimestamp(),
+            OpenPrice = bfpOrder.AveragePrice,
+        };
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Strategist.Common;
+using Strategist.Core.Models;
 using Strategist.Core.Services;
 using Strategist.Core.Transports;
 using System.CommandLine;
