@@ -4,9 +4,11 @@ internal class Stats
 {
     public float StartBalance { get; set; }
     public float MaxBalance { get; set; }
+    public float MaxBalancePct { get; set; }
     public float MinBalance { get; set; }
+    public float MinBalancePct { get; set; }
     public float Balance { get; set; }
-    public float PercentProfit { get; set; }
+    public float ProfitPct { get; set; }
 
     public int OrdersCount { get; set; }
     public int Long { get; set; }
@@ -24,9 +26,9 @@ internal class Stats
 
     public override string ToString() =>
         $"StartBalance: {StartBalance}\n"
-        + $"MaxBalance:   {MaxBalance}\n"
-        + $"MinBalance:   {MinBalance}\n"
-        + $"Balance:      {Balance} ({PercentProfit:0.00}%)\n\n"
+        + $"MaxBalance:   {MaxBalance} ({MaxBalancePct:0.00}%)\n"
+        + $"MinBalance:   {MinBalance} ({MinBalancePct:0.00}%)\n"
+        + $"Balance:      {Balance} ({ProfitPct:0.00}%)\n\n"
         + $"OrdersCount:  {OrdersCount}\n"
         + $"Long:         {Long}\n"
         + $"LongRight:    {LongRight}\n"

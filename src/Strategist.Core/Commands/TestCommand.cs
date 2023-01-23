@@ -47,7 +47,6 @@ internal class TestCommand : Command
     private async void Handle(string ticker, int days = 1, int gap = 0)
     {
         OrderService._sb = _sb;
-        StatService._sb = _sb;
 
         ITransport broker = _sb.GetBroker();
         List<Ohlcv> historyData = await broker.GetHistoryAsync(ticker, days, gap);

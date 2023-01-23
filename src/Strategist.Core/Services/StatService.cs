@@ -5,8 +5,6 @@ namespace Strategist.Core.Services;
 
 internal static class StatService
 {
-    internal static StrategyBase _sb;
-
     internal static Stats GetStats()
     {
         float balance = Convert.ToSingle(StrategyBase.BotConfig["Amount"]);
@@ -36,7 +34,10 @@ internal static class StatService
             }
         });
 
-        stats.PercentProfit = (stats.Balance / balance - 1) * 100;
+        stats.MaxBalancePct = (stats.MaxBalance / stats.StartBalance - 1) * 100;
+        stats.MinBalancePct = (stats.MinBalance / stats.StartBalance - 1) * 100;
+        stats.ProfitPct = (stats.Balance / stats.StartBalance - 1) * 100;
+
         return stats;
     }
 }
