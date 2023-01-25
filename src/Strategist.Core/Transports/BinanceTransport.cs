@@ -37,7 +37,7 @@ internal class BinanceTransport : ITransport
         });
     }
 
-    public async void GetTicks()
+    public async void SubscribeToTicksAsync()
     {
         string intervalString = StrategyBase.BotConfig["Interval"].ToString()!;
         KlineInterval klineInterval = intervalString.ToKlineInterval();
@@ -47,6 +47,7 @@ internal class BinanceTransport : ITransport
             {
                 IBinanceStreamKline kline = dataEvent.Data.Data;
                 Ohlcv ohlcv = kline.ToOhlcv();
+                _sb.AddCandle(ohlcv);
 
                 _sb.OnTick(ohlcv);
 
@@ -54,6 +55,8 @@ internal class BinanceTransport : ITransport
                     _sb.OnCandle(ohlcv);
             });
     }
+
+    public async void UnsubscribeAllAsync() => await SocketClient.UnsubscribeAllAsync();
 
     public async Task<List<Ohlcv>> GetHistoryAsync(string ticker, int days = 1, int gap = 0)
     {

@@ -18,8 +18,8 @@ public static class OrderService
         Ohlcv curCandle = StrategyBase.Candles[0];
 
         float amount = Convert.ToSingle(StrategyBase.BotConfig["Amount"]);
-        float percentOneOrder = Convert.ToSingle(StrategyBase.BotConfig["PercentOneOrder"]);
-        float lots = (amount * percentOneOrder) / (float)curCandle.Close;
+        float amountOrderPct = Convert.ToSingle(StrategyBase.BotConfig["AmountOrderPct"]);
+        float lots = (amount * amountOrderPct) / (float)curCandle.Close;
 
         Order order = new()
         {

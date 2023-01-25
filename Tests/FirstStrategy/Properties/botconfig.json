@@ -1,8 +1,9 @@
 {
   "Broker": "Binance",
+  "Ticker": "POLSUSDT",
   "Interval": "15m",
   "Amount": 500,
-  "PercentOneOrder": 0.2,
+  "AmountOrderPct": 0.2,
   "Fee": 0.02,
-  "Stop": 0.03
+  "Stop": 0.005
 }

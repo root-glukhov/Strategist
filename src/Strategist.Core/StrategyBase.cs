@@ -1,6 +1,8 @@
 ﻿using Newtonsoft.Json;
 using Strategist.Common;
 using Strategist.Core.Commands;
+using Strategist.Core.Models;
+using Strategist.Core.Services;
 using Strategist.Core.Transports;
 using System.CommandLine;
 using System.CommandLine.Parsing;
@@ -14,6 +16,8 @@ public abstract class StrategyBase
     public static Dictionary<string, object> BotConfig;
     public static Ohlcv[] Candles = new Ohlcv[10];
 
+    internal static ITransport Broker;
+
     #endregion
 
     #region Virtual methods
@@ -24,13 +28,20 @@ public abstract class StrategyBase
     public virtual void OnClosedOrder(Order order) { }
 
     #endregion
+    
 
     #region Ctor
 
     public StrategyBase()
     {
+        Console.CancelKeyPress += Console_CancelKeyPress;
+        Task.Run(() => Console.ReadLine());
+
         string json = new StreamReader("Properties/botconfig.json").ReadToEnd();
         BotConfig = JsonConvert.DeserializeObject<Dictionary<string, object>>(json)!;
+
+        Broker = GetBroker();
+        OrderService._sb = this;
 
         RootCommand root = new();
         root.AddCommand(new ExecuteCommand(this));
@@ -61,4 +72,18 @@ public abstract class StrategyBase
     }
 
     #endregion
+
+    private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
+    {
+        e.Cancel = true;
+
+        OrderService.CloseAll();
+        Broker.UnsubscribeAllAsync();
+
+        Stats stats = StatService.GetStats();
+        Console.WriteLine(stats);
+
+        Console.ReadLine();
+        Environment.Exit(0);
+    }
 }

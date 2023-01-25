@@ -29,17 +29,20 @@ internal class MyStrategy : StrategyBase
         else
         {
             counter++;
-            if(counter >= 40)
+            if(counter >= 5)
             {
                 trailing.SetForPercent(order);
             }
         } 
     }
 
+    public override void OnCreateOrder(Order createdOrder) => 
+        Console.WriteLine($"OnCreateOrder:\n{createdOrder}");
+
     public override void OnClosedOrder(Order closedOrder)
     {
         order = null;
         counter = 0;
-        Console.WriteLine(closedOrder + "\n");
+        Console.WriteLine($"OnClosedOrder:\n{closedOrder}");
     }
 }
