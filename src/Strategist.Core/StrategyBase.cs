@@ -13,12 +13,11 @@ public abstract class StrategyBase
 {
     #region Static fields 
 
-    public static Dictionary<string, object> BotConfig;
-    public static Ohlcv[] Candles = new Ohlcv[10];
-
+    internal static Dictionary<string, object> BotConfig;
     internal static ITransport Broker;
-
+    private static readonly Ohlcv[] Candles = new Ohlcv[10];
     #endregion
+
 
     #region Virtual methods
 
@@ -29,12 +28,11 @@ public abstract class StrategyBase
 
     #endregion
     
-
     #region Ctor
 
     public StrategyBase()
     {
-        Console.CancelKeyPress += Console_CancelKeyPress;
+        Console.CancelKeyPress += Console_CancelKeyPress!;
         Task.Run(() => Console.ReadLine());
 
         string json = new StreamReader("Properties/botconfig.json").ReadToEnd();
@@ -53,26 +51,30 @@ public abstract class StrategyBase
 
     #endregion
 
-    #region Internal functions
+    #region Functions
 
-    internal ITransport GetBroker()
+    private ITransport GetBroker()
     {
         string brokerString = BotConfig["Broker"].ToString()!;
 
-        return brokerString.ToLower() switch {
+        return brokerString.ToLower() switch
+        {
             "binance" => new BinanceTransport(this),
             _ => throw new ArgumentOutOfRangeException("'Broker' parameter not specified in botconfig.json"),
         };
     }
 
-    internal void AddCandle(Ohlcv ohlcv)
+    #endregion
+
+    #region Static functions
+
+    public static object GetConfig(string param) => BotConfig[param];
+    public static Ohlcv GetCandle(int index) => Candles[index];
+    internal static void AddCandle(Ohlcv ohlcv)
     {
         Array.Copy(Candles, 0, Candles, 1, Candles.Length - 1);
         Candles[0] = ohlcv;
     }
-
-    #endregion
-
     private static void Console_CancelKeyPress(object sender, ConsoleCancelEventArgs e)
     {
         e.Cancel = true;
@@ -86,4 +88,6 @@ public abstract class StrategyBase
         Console.ReadLine();
         Environment.Exit(0);
     }
+
+    #endregion
 }

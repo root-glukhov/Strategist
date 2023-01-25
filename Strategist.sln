@@ -13,7 +13,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{0E4389FD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FirstStrategy", "Tests\FirstStrategy\FirstStrategy.csproj", "{73DF6529-BBB5-4C42-8EEB-509DE24B680D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Common", "src\Strategist.Common\Strategist.Common.csproj", "{C529410B-F0D6-486D-ADCC-00E251AF2DDE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Strategist.Common", "src\Strategist.Common\Strategist.Common.csproj", "{C529410B-F0D6-486D-ADCC-00E251AF2DDE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D13B965C-01DE-4EAF-98F9-BF3EA8D10A2C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

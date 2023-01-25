@@ -8,10 +8,10 @@ namespace FirstStrategy;
 internal class MyStrategy : StrategyBase
 {
     Order? order;
-    TrailingStop trailing;
+    readonly TrailingStop trailing;
 
     int counter;
-    Random random;
+    readonly Random random;
 
     public MyStrategy()
     {

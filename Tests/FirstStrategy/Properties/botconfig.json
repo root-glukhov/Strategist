@@ -1,6 +1,6 @@
 {
   "Broker": "Binance",
-  "Ticker": "POLSUSDT",
+  "Ticker": "ATOMUSDT",
   "Interval": "15m",
   "Amount": 500,
   "AmountOrderPct": 0.2,

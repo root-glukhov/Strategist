@@ -1,4 +1,6 @@
-﻿using Strategist.Common;
+﻿using Binance.Net.Enums;
+using Strategist.Common;
+using Strategist.Core.Extensions;
 using Strategist.Core.Models;
 using Strategist.Core.Services;
 using Strategist.Core.Transports;
@@ -17,14 +19,6 @@ internal class TestCommand : Command
 
         #region Parameters initialization
 
-        var tickerOption = new Option<string>("--ticker")
-        {
-            Name = "ticker",
-            Description = "Ticker",
-            IsRequired = true
-        };
-        AddOption(tickerOption);
-
         var daysOption = new Option<int>("--days")
         {
             Name = "days",
@@ -41,16 +35,19 @@ internal class TestCommand : Command
 
         #endregion
 
-        this.SetHandler(Handle, tickerOption, daysOption, gapOption);
+        this.SetHandler(Handle, daysOption, gapOption);
     }
 
-    private async void Handle(string ticker, int days = 1, int gap = 0)
+    private async void Handle(int days = 1, int gap = 0)
     {
-        ITransport broker = _sb.GetBroker();
-        List<Ohlcv> historyData = await broker.GetHistoryAsync(ticker, days, gap);
+        ITransport broker = StrategyBase.Broker;
+        string ticker = StrategyBase.BotConfig["Ticker"].ToString()!;
+        string intervalString = StrategyBase.BotConfig["Interval"].ToString()!;
+
+        List<Ohlcv> historyData = await StrategyBase.Broker.GetHistoryAsync(ticker, intervalString, days, gap);
 
         historyData.ForEach(ohlcv => {
-            _sb.AddCandle(ohlcv);
+            StrategyBase.AddCandle(ohlcv);
 
             List<Ohlcv> ticks = GenerateTicks(ohlcv);
             ticks.ForEach(tick => {

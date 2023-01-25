@@ -4,10 +4,10 @@ namespace Strategist.Core.Services;
 
 public static class OrderService
 {
-    public static StrategyBase _sb;
+    internal static StrategyBase _sb;
 
     private static int ordersCounter;
-    private static List<Order> Orders = new();
+    private static readonly List<Order> Orders = new();
 
     #region Static methods
 
@@ -15,7 +15,7 @@ public static class OrderService
 
     public static Order CreateOrder(OrderType orderType)
     {
-        Ohlcv curCandle = StrategyBase.Candles[0];
+        Ohlcv curCandle = StrategyBase.GetCandle(0);
 
         float amount = Convert.ToSingle(StrategyBase.BotConfig["Amount"]);
         float amountOrderPct = Convert.ToSingle(StrategyBase.BotConfig["AmountOrderPct"]);
@@ -39,9 +39,9 @@ public static class OrderService
 
     public static Order CloseOrder(Order order)
     {
-        order.CloseTime = StrategyBase.Candles[0].Date;
-        order.CloseTimestamp = StrategyBase.Candles[0].Timestamp;
-        order.ClosePrice = StrategyBase.Candles[0].Close;
+        order.CloseTime = StrategyBase.GetCandle(0).Date;
+        order.CloseTimestamp = StrategyBase.GetCandle(0).Timestamp;
+        order.ClosePrice = StrategyBase.GetCandle(0).Close;
         order.isClosed = true;
 
         _sb.OnClosedOrder(order);
