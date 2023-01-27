@@ -5,6 +5,7 @@ namespace Strategist.Core.Services;
 public static class OrderService
 {
     internal static StrategyBase _sb;
+    internal static bool OrdersAllowed = false;
 
     private static int ordersCounter;
     private static readonly List<Order> Orders = new();
@@ -13,8 +14,14 @@ public static class OrderService
 
     internal static List<Order> GetOrders() => Orders;
 
-    public static Order CreateOrder(OrderType orderType)
+    public static Order? CreateOrder(OrderType orderType)
     {
+        if (!OrdersAllowed)
+        {
+            Console.WriteLine("Orders not allowed");
+            return null;
+        }
+            
         Ohlcv curCandle = StrategyBase.GetCandle(0);
 
         float amount = Convert.ToSingle(StrategyBase.BotConfig["Amount"]);
@@ -37,8 +44,14 @@ public static class OrderService
         return order;
     }
 
-    public static Order CloseOrder(Order order)
+    public static Order? CloseOrder(Order order)
     {
+        if (!OrdersAllowed)
+        {
+            Console.WriteLine("Orders not allowed");
+            return null;
+        }
+
         order.CloseTime = StrategyBase.GetCandle(0).Date;
         order.CloseTimestamp = StrategyBase.GetCandle(0).Timestamp;
         order.ClosePrice = StrategyBase.GetCandle(0).Close;
@@ -50,6 +63,12 @@ public static class OrderService
 
     public static void CloseAll()
     {
+        if (!OrdersAllowed)
+        {
+            Console.WriteLine("Orders not allowed");
+            return;
+        }
+
         foreach (var order in Orders.Where(x => !x.isClosed))
         {
             CloseOrder(order);

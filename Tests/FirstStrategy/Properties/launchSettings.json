@@ -6,7 +6,7 @@
     },
     "Test": {
       "commandName": "Project",
-      "commandLineArgs": "FirstStrategy test --days 11 --gap 200"
+      "commandLineArgs": "FirstStrategy test --days 11"
     },
     "Execute": {
       "commandName": "Project",

@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Strategist.Core\Strategist.Core.csproj" />
+    <ProjectReference Include="..\..\src\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj" />
     <ProjectReference Include="..\..\src\Strategist.Plugins.TakeStop\Strategist.Plugins.TakeStop.csproj" />
   </ItemGroup>
 

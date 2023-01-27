@@ -44,9 +44,10 @@ internal class TestCommand : Command
         string ticker = StrategyBase.BotConfig["Ticker"].ToString()!;
         string intervalString = StrategyBase.BotConfig["Interval"].ToString()!;
 
-        List<Ohlcv> historyData = await StrategyBase.Broker.GetHistoryAsync(ticker, intervalString, days, gap);
-
-        historyData.ForEach(ohlcv => {
+        OrderService.OrdersAllowed = true;
+        IEnumerable<Ohlcv> ohlcvData = await StrategyBase.Broker.GetHistoryAsync(ticker, intervalString, days, gap);
+        foreach(var ohlcv in ohlcvData)
+        {
             StrategyBase.AddCandle(ohlcv);
 
             List<Ohlcv> ticks = GenerateTicks(ohlcv);
@@ -56,7 +57,7 @@ internal class TestCommand : Command
                 if (ticks.Last() == tick)
                     _sb.OnCandle(ohlcv);
             });
-        });
+        }
 
         OrderService.CloseAll();
         Stats stats = StatService.GetStats();

@@ -18,7 +18,6 @@ public abstract class StrategyBase
     private static readonly Ohlcv[] Candles = new Ohlcv[10];
     #endregion
 
-
     #region Virtual methods
 
     public virtual void OnTick(Ohlcv ohlcv) { }

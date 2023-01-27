@@ -20,6 +20,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Strategist.Plugins.Indicators", "src\Strategist.Plugins.Indicators\Strategist.Plugins.Indicators.csproj", "{911716B5-E0CC-4F1D-A127-5C0D6A02DA3A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,10 @@ Global
 		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C529410B-F0D6-486D-ADCC-00E251AF2DDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{911716B5-E0CC-4F1D-A127-5C0D6A02DA3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{911716B5-E0CC-4F1D-A127-5C0D6A02DA3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{911716B5-E0CC-4F1D-A127-5C0D6A02DA3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{911716B5-E0CC-4F1D-A127-5C0D6A02DA3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -49,6 +55,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{7481AD6D-8BE0-4270-BFD1-0A9777B8AEAE} = {AA52A799-78C8-431B-9C9C-0F4B11266222}
 		{73DF6529-BBB5-4C42-8EEB-509DE24B680D} = {0E4389FD-4BF4-4B2B-82E3-35BB175627BC}
+		{911716B5-E0CC-4F1D-A127-5C0D6A02DA3A} = {AA52A799-78C8-431B-9C9C-0F4B11266222}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7359A0E5-7143-4650-A9E6-50E79E4A42A7}

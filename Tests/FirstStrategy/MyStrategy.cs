@@ -1,6 +1,7 @@
 ﻿using Strategist.Common;
 using Strategist.Core;
 using Strategist.Core.Services;
+using Strategist.Plugins.Indicators;
 using Strategist.Plugins.TakeStop;
 
 namespace FirstStrategy;
@@ -8,41 +9,53 @@ namespace FirstStrategy;
 internal class MyStrategy : StrategyBase
 {
     Order? order;
+    readonly SMA smaFast;
+    readonly SMA smaSlow;
     readonly TrailingStop trailing;
-
-    int counter;
-    readonly Random random;
 
     public MyStrategy()
     {
-        random = new Random();
+        smaFast = new SMA(9);
+        smaSlow = new SMA(32);
         trailing = new TrailingStop();
     }
 
     public override void OnTick(Ohlcv ohlcv)
     {
-        if(order == null)
+        decimal smaFastMoment = smaFast.Moment(ohlcv.Close);
+        decimal smaSlowMoment = smaSlow.Moment(ohlcv.Close);
+
+        if (order == null)
         {
-            OrderType randomOrderType = random.Next(2) == 0 ? OrderType.Buy : OrderType.Sell;
-            order = OrderService.CreateOrder(randomOrderType);
+            if (smaFastMoment > smaSlowMoment 
+                && smaFast.GetValues(1) <= smaSlow.GetValues(1))
+            {
+                order = OrderService.CreateOrder(OrderType.Sell);
+            }
+            else if (smaFastMoment < smaSlowMoment 
+                && smaFast.GetValues(1) >= smaSlow.GetValues(1))
+            {
+                order = OrderService.CreateOrder(OrderType.Buy);
+            }
         }
         else
         {
-            counter++;
-            if(counter >= 5)
-            {
-                trailing.SetForPercent(order);
-            }
-        } 
+            trailing.SetForPercent(order);
+        }
     }
 
-    public override void OnCreateOrder(Order createdOrder) => 
-        Console.WriteLine($"OnCreateOrder:\n{createdOrder}");
+    public override void OnCandle(Ohlcv ohlcv)
+    { 
+        smaFast.Next(ohlcv.Close);
+        smaSlow.Next(ohlcv.Close);
+    }
+
+    //public override void OnCreateOrder(Order createdOrder) => 
+    //    Console.WriteLine($"OnCreateOrder:\n{createdOrder}");
 
     public override void OnClosedOrder(Order closedOrder)
     {
-        order = null;
-        counter = 0;
         Console.WriteLine($"OnClosedOrder:\n{closedOrder}");
+        order = null;
     }
 }
